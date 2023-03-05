@@ -1,0 +1,19 @@
+version: "3"
+services:
+  master:
+    build:
+      context: master
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./config/hosts.yaml:/tmp/hosts.yaml
+      - ./master:/workspace
+  node1:
+    build:
+      context: node
+      dockerfile: Dockerfile
+    volumes:
+      - ./node:/workspace
+    ports:
+      - 2022:22
+    tty: true

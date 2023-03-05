@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ./accounts.yml
+
+  tasks:
+    - shell: hostname
+      register: r_hostname
+    - debug: { var: r_hostname.stdout }
+
+    - debug: { var: ansible_connection }
+    - debug: { var: ansible_playbook_python }
+    - debug: { var: ansible_python_interpreter }
+
+    # make user
+    - name: make group
+      group:
+        name: "{{ item['name'] }}"
+      loop: "{{ accounts }}"
+
+    - name: make user
+      user:
+        name: "{{ item['name'] }}"
+        group: "{{ item['name'] }}"
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: ".ssh/id_{{ item['name'] }}_rsa"
+      loop: "{{ accounts }}"

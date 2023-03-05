@@ -1,0 +1,2 @@
+Host node1
+  IdentityFile ~/.ssh/id_test_rsa

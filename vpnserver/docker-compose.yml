@@ -1,0 +1,17 @@
+version: "3"
+services:
+  softether-server:
+    image: siomiz/softethervpn
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 500:500/udp
+      - 4500:4500/udp
+      - 1701:1701/tcp
+      - 5555:5555/tcp
+    container_name: softether-server
+    environment:
+      - USERNAME=vpnname
+      - PASSWORD=vpnpassword
+      - PSK=vpnsecret
+      - VPNCMD_HUB=SecureNatDisable
