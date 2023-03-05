@@ -1,0 +1,83 @@
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3-pip
+    update_cache: true
+  become: true
+
+- name: Add GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+  become: true
+
+- name: Add apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+  become: true
+
+- name: Install docker
+  ansible.builtin.apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    update_cache: true
+  become: true
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: latest
+  become: true
+
+- name: Install pip docker
+  pip:
+    name: docker
+    state: latest
+  become: true
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: latest
+  become: true
+
+- name: Add group
+  ansible.builtin.group:
+    name: docker
+  become: true
+
+- name: Execute whoami
+  ansible.builtin.command: whoami
+  register: whoami
+  changed_when: whoami.rc != 0
+
+- name: Append group
+  ansible.builtin.user:
+    name: "{{ whoami.stdout }}"
+    groups:
+      - docker
+    append: true
+  become: true
+
+- name: Start docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: Copy docker-compose.yml
+  copy:
+    src: docker-compose.yml
+    dest: /home/{{ user }}/docker-compose.yml
+
+- name: Docker compose up
+  docker_compose:
+    project_src: /home/{{ user }}/
+    state: present

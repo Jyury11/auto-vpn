@@ -4,7 +4,7 @@ help: ## help
 
 .PHONY: up
 up: ## up
-	@docker compose up -d --build
+	@docker compose up -d
 
 .PHONY: down
 down: ## down
@@ -12,4 +12,4 @@ down: ## down
 
 .PHONY: exec
 exec: ## exec
-	@docker compose exec softether-bridge bash
+	@docker compose exec softether_bridge bash

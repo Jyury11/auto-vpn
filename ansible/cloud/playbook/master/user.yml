@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../accounts.yml
+
+  tasks:
+    # make user
+    - name: make group
+      group:
+        name: "{{ item['name'] }}"
+      loop: "{{ accounts }}"
+
+    - name: make user
+      user:
+        name: "{{ item['name'] }}"
+        group: "{{ item['name'] }}"
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: "/workspaces/vpn-docker/ansible/cloud/.ssh/id_rsa"
+      loop: "{{ accounts }}"

@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_prompt:
+    - name: user
+      prompt: Please set user name
+      private: no
+
+    - name: password
+      prompt: Please set vpn password
+      private: yes
+      confirm: yes
+
+    - name: secret
+      prompt: Please set vpn secret
+      private: yes
+      confirm: yes
+
+  tasks:
+    - debug: { var: ansible_connection }
+    - debug: { var: ansible_playbook_python }
+    - debug: { var: ansible_python_interpreter }
+
+    - name: create vars
+      shell: make var USER="{{ user }}" PASSWORD="{{ password }}" SECRET="{{ secret }}"
+      args:
+        chdir: /workspaces/vpn-docker/ansible/cloud
